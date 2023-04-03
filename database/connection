@@ -1,0 +1,22 @@
+import psycopg2
+
+# Verbindung zur Datenbank herstellen
+conn = psycopg2.connect(
+    host="localhost",
+    database="PSQL_ADSFS2023Gruppe15",
+    user="ADSFS2023Gruppe15",
+    password="ADS_FS_2023_G15!?"
+)
+
+# Cursor erstellen
+cur = conn.cursor()
+
+# Beispiel-Abfrage ausführen
+cur.execute("SELECT * FROM dual")
+
+# Ergebnis abrufen
+result = cur.fetchall()
+
+# Verbindung schließen
+cur.close()
+conn.close()

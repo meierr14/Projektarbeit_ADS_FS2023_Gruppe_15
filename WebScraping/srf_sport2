@@ -1,0 +1,46 @@
+import pandas as pd
+import psycopg2
+from bs4 import BeautifulSoup
+import requests
+
+# Daten extrahieren
+url = "https://www.srf.ch/sport/resultcenter/results#/results/football/premier-league"
+response = requests.get(url)
+soup = BeautifulSoup(response.text, "html.parser")
+data = [
+    {"name": "Max", "date": "2022-04-01", "score": 100},
+    {"name": "Anna", "date": "2022-04-01", "score": 75},
+    {"name": "John", "date": "2022-04-02", "score": 90}
+]
+
+# Verbindung zur Datenbank herstellen
+conn = psycopg2.connect(
+    host="localhost",
+    database="PSQL_ADSFS2023Gruppe15",
+    user="ADSFS2023Gruppe15",
+    password="ADS_FS_2023_G15!?"
+)
+
+# Cursor erstellen
+cur = conn.cursor()
+
+# Create Tables -- noch anpassen
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS sport_data (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100),
+        date DATE,
+        score INTEGER
+    )
+""")
+
+# Daten in die Datenbank einfügen
+for index, row in data.iterrows():
+    cur.execute("INSERT INTO mytable (column1, column2, column3) VALUES (%s, %s, %s)", (row['Column1'], row['Column2'], row['Column3']))
+
+# Änderungen in der Datenbank speichern
+conn.commit()
+
+# Verbindung schließen
+cur.close()
+conn.close()

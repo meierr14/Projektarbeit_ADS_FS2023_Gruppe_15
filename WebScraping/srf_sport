@@ -1,0 +1,11 @@
+import requests
+from bs4 import BeautifulSoup
+
+url = 'https://www.srf.ch/sport/resultcenter/results#/results/football/premier-league'
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'lxml')
+title = soup.find('title').text
+paragraphs = [p.text for p in soup.find_all('p')]
+with open('output.txt', 'w') as f:
+    f.write(title + '\n')
+    f.writelines([p + '\n' for p in paragraphs])

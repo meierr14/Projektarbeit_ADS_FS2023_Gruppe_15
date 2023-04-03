@@ -1,0 +1,13 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    container_name: postgres-db-ads-fs2023-g15
+    environment:
+      POSTGRES_USER: ADSFS2023Gruppe15
+      POSTGRES_PASSWORD: ADS_FS_2023_G15!?
+      POSTGRES_DB: PSQL_DB_ADSFS2023Gruppe15
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

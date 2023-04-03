@@ -1,0 +1,15 @@
+import http.client
+
+conn = http.client.HTTPSConnection("football-prediction-api.p.rapidapi.com")
+
+headers = {
+    'X-RapidAPI-Key': "ed297a9603mshc9ad32248de9174p1736b3jsnadb9d42ae639",
+    'X-RapidAPI-Host': "football-prediction-api.p.rapidapi.com"
+    }
+
+conn.request("GET", "/api/v2/predictions?federation=UEFA&iso_date=2018-12-01&market=classic", headers=headers)
+
+res = conn.getresponse()
+data = res.read()
+
+print(data.decode("utf-8"))

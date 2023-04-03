@@ -1,0 +1,7 @@
+import requests
+import json
+uri = 'https://api.football-data.org/v4/matches'
+headers = { 'X-Auth-Token': 'ba5017feae1843bf8f52c39a21819e82' }
+response = requests.get(uri, headers=headers)
+for match in response.json()['matches']:
+  print (match)

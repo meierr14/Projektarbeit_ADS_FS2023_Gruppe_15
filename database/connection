@@ -31,12 +31,23 @@ except psycopg2:
 
 
 with open('APIs/JSONData/mannschaften.json', 'r') as file:
-    json_data = json.load(file)
+    data_mannschaften = json.load(file)
 
-for row in json_data:
+with open('APIs/JSONData/tabelle.json', 'r') as file:
+    data_tabelle = json.load(file)
+
+
+#check DB if already exists else do not run this again
+for row in data_mannschaften:
     name = row['teamName']
     id = row['teamId']
     cur.execute("INSERT INTO mannschaften (mannschaft, id) VALUES (%s, %s)", (name, id))
+
+for row in data_tabelle:
+    id = row['teamInfoId']
+    points = row['points']
+    goals = row['goals']
+    cur.execute(f'UPDATE mannschaften SET punkte = {points}, tore = {goals} WHERE id = {id}')
 
 conn.commit()
 

@@ -1,27 +1,15 @@
 import requests
 import pandas
 import json
-uri = 'https://api.football-data.org/v4/competitions'
-headers = { 'X-Auth-Token': 'ba5017feae1843bf8f52c39a21819e82'}
-#response = requests.get(uri, headers=headers,params=[])
-#response.raise_for_status
-
-#data = response.json()
-#print(data)
 
 
-#for match in response.json()['matches']:
-#  print (match)
-
-
-###################################################################################
 # testing with OpenLigaDB API
 
 # Alle Spieltage der UEFA Championsleague 22/23
-request1 = 'https://api.openligadb.de/getmatchdata/uefacl22/2022/'
+request1 = 'https://api.openligadb.de/getmatchdata/bl1/2022/'
 # Informationen über ein bestimmtes Spiel
-request2 = 'https://api.openligadb.de/getmatchdata/65112'
-#request3 = 'https://api.openligadb.de/getresultinfos/99414'
+request2 = 'https://api.openligadb.de/getavailableteams/bl1/2022'
+request3 = 'https://api.openligadb.de/getbltable/bl1/2022'
 
 response = requests.get(url=request1)
 response.raise_for_status
@@ -37,33 +25,48 @@ df = pandas.read_json('./APIs/JSONData/ganze_saison.json')
 
 # Entfernt Spalten die nicht benötigt werden
 df = df.drop(columns=["leagueId", "timeZoneID", "leagueShortcut", "lastUpdateDateTime", "location", "numberOfViewers"], axis=1)
+df = df.loc[df['matchIsFinished'] == True]
 
+print(df)
+
+days = []
+home_team = []
+guest_team = []
+for index, row in df.iterrows():
+    days.append(row['matchDateTime'])
+    home_team.append(row['team1']['teamName'])
+    guest_team.append(row['team2']['teamName'])
+
+
+
+    print(home_team, guest_team)
 
 results = df['matchResults'][0]
 score_team_home = results[0]['pointsTeam1']
 score_team_guest = results[0]['pointsTeam2']
 
-print(f'{score_team_home} : {score_team_guest}')
+#print(f'{score_team_home} : {score_team_guest}')
 
 
-# Informationen über spezifisches Spiel mit MatchID
+
+
+# Alle Manschaften dieser Saison
 response2 = requests.get(url=request2)
 response2.raise_for_status
 
 data2 = response2.json()
 
 
-with open("./APIs/JSONData/spezifisches_spiel.json", "w") as file:
+with open("./APIs/JSONData/mannschaften.json", "w") as file:
     json.dump(data2, file, indent=4)
 
 
-# -------------------------------------------------------------------------#
-# Versuch direkt auf den Abschnitt der Resultate zuzugreifen über resultID
-# Erzeugt das gleiche Ergebniss wie die Abfrage über matchID
-# response3 = requests.get(url=request3)
-# response3.raise_for_status
+response3 = requests.get(url=request3)
+response3.raise_for_status
 
-#data3 = response2.json()
+data2 = response3.json()
 
-#with open("./APIs/JSONData/match_result.json", "w") as file:
-    #json.dump(data3, file, indent=4)
+
+with open("./APIs/JSONData/tabelle.json", "w") as file:
+    json.dump(data2, file, indent=4)
+

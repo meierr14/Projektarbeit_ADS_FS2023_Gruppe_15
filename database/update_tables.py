@@ -29,9 +29,9 @@ def table_update_mannschaften(data_tabelle):
 
 def table_insert_result(data_spiele):
     insert_query = """
-        INSERT INTO bundesliga_resultate (id, spieltag_datum, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
+        INSERT INTO bundesliga_resultate (match_id, spieltag_datum, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
         SELECT %s, %s, %s, %s, %s, %s, %s 
-        WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE id=%s);
+        WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE match_id=%s);
     """
     for row in data_spiele:
         match_id = row['matchID']

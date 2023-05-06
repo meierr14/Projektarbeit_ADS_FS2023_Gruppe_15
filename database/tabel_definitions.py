@@ -2,8 +2,8 @@ create_table_resultate = """
     CREATE TABLE IF NOT EXISTS bundesliga_resultate(
         Match_ID INTEGER PRIMARY KEY,
         Spieltag_Datum DATE,
-        ID_TeamH INTEGER,
-        ID_TeamG INTEGER,
+        ID_TeamH INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
+        ID_TeamG INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         Anzahl_Tore INTEGER,
         Anzahl_Schuesse INTEGER,
         Ballbesitz_TeamH REAL,
@@ -35,7 +35,7 @@ create_table_pass_stats = """
     CREATE TABLE IF NOT EXISTS bundesliga_pass_stats (
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
-        team_name TEXT NOT NULL,
+        team_name INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         pass_percentage NUMERIC NOT NULL
     );
 """
@@ -44,7 +44,7 @@ create_table_tore_schuesse = '''
     CREATE TABLE IF NOT EXISTS bundesliga_shots_stats (
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
-        team_name TEXT NOT NULL,
+        team_name INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         value NUMERIC NOT NULL
     );
 '''
@@ -53,7 +53,7 @@ create_table_zweikaempfe = '''
     CREATE TABLE IF NOT EXISTS bundesliga_duels_stats (
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
-        team_name TEXT NOT NULL,
+        team_name INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         value NUMERIC NOT NULL
     );
 '''

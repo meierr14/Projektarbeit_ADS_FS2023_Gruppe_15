@@ -22,7 +22,6 @@ with open("./APIs/JSONData/ganze_saison.json", "w") as file:
     for row in data:
         if row['matchIsFinished']:
             new_data.append(row)
-    print(new_data)
     json.dump(new_data, file, indent=4)
 
 # Erstellt ein Datenset mit den Daten des JSON Files in Form einer Tabelle

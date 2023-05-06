@@ -3,11 +3,16 @@ import json
 
 
 def table_insert_mannschaften(data_mannschaften):
+    insert_query = """
+        INSERT INTO bundesliga_mannschaften (team_id, mannschaft) 
+        SELECT %s, %s 
+        WHERE NOT EXISTS (SELECT 1 FROM bundesliga_mannschaften WHERE team_id=%s);
+    """
     # Abafüllen der Tabelle Mannschaften
     for row in data_mannschaften:
         name = row['teamName']
         id = row['teamId']
-        cur.execute("INSERT INTO bundesliga_mannschaften (team_id, mannschaft) SELECT %s, %s WHERE NOT EXISTS (SELECT 1 FROM bundesliga_mannschaften WHERE team_id=%s);", (id, name, id))
+        cur.execute(insert_query, (id, name, id))
 
     conn.commit()
 
@@ -23,6 +28,11 @@ def table_update_mannschaften(data_tabelle):
 
 
 def table_insert_result(data_spiele):
+    insert_query = """
+        INSERT INTO bundesliga_resultate (id, spieltag_datum, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
+        SELECT %s, %s, %s, %s, %s, %s, %s 
+        WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE id=%s);
+    """
     for row in data_spiele:
         match_id = row['matchID']
         datum = row['matchDateTime']
@@ -31,7 +41,7 @@ def table_insert_result(data_spiele):
         goals_heim = row['matchResults'][0]['pointsTeam1']
         goals_gast = row['matchResults'][0]['pointsTeam2']
         goals_total = goals_heim + goals_gast
-        cur.execute("INSERT INTO bundesliga_resultate (id, spieltag_datum, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) SELECT %s, %s, %s, %s, %s, %s, %s WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE id=%s);", (match_id, datum, team_heim, team_gast, goals_total, goals_heim, goals_gast, match_id))  
+        cur.execute(insert_query, (match_id, datum, team_heim, team_gast, goals_total, goals_heim, goals_gast, match_id))  
     
     conn.commit()
 

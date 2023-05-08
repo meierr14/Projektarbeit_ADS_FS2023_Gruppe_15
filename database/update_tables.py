@@ -28,12 +28,15 @@ def table_update_mannschaften(data_tabelle):
 
 
 def table_insert_result(data_spiele):
+    game_nr = 1
+    counter = 0
     insert_query = """
-        INSERT INTO bundesliga_resultate (match_id, spieltag_datum, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
-        SELECT %s, %s, %s, %s, %s, %s, %s 
+        INSERT INTO bundesliga_resultate (match_id, spieltag_datum, spieltag, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
+        SELECT %s, %s, %s, %s, %s, %s, %s, %s 
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE match_id=%s);
     """
     for row in data_spiele:
+        counter += 1
         match_id = row['matchID']
         datum = row['matchDateTime']
         team_heim = row['team1']['teamId']
@@ -41,8 +44,11 @@ def table_insert_result(data_spiele):
         goals_heim = row['matchResults'][0]['pointsTeam1']
         goals_gast = row['matchResults'][0]['pointsTeam2']
         goals_total = goals_heim + goals_gast
-        cur.execute(insert_query, (match_id, datum, team_heim, team_gast, goals_total, goals_heim, goals_gast, match_id))  
-    
+        cur.execute(insert_query, (match_id, datum, game_nr, team_heim, team_gast, goals_total, goals_heim, goals_gast, match_id))  
+        if counter == 9:
+            counter = 0
+            game_nr += 1
+
     conn.commit()
 
 

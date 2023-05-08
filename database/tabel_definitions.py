@@ -37,9 +37,9 @@ create_table_pass_stats = """
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
         team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
-        pass_complete NUMERIC NOT NULL,
-        pass_failed NUMERIC NOT NULL,
-        pass_total NUMERIC NOT NULL,
+        pass_complete INTEGER NOT NULL,
+        pass_failed INTEGER NOT NULL,
+        pass_total INTEGER NOT NULL,
         pass_percentage NUMERIC NOT NULL
     );
 """
@@ -49,7 +49,7 @@ create_table_tore_schuesse = '''
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
         team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
-        shots_total NUMERIC NOT NULL
+        shots_total INTEGER NOT NULL
     );
 '''
 
@@ -58,7 +58,7 @@ create_table_zweikaempfe = '''
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
         team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
-        duels_total NUMERIC NOT NULL,
-        duels_won NUMERIC NOT NULL
+        duels_total INTEGER NOT NULL,
+        duels_won INTEGER NOT NULL
     );
 '''

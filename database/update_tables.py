@@ -31,7 +31,7 @@ def table_insert_result(data_spiele):
     game_nr = 1
     counter = 0
     insert_query = """
-        INSERT INTO bundesliga_resultate (match_id, spieltag_datum, spieltag, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
+        INSERT INTO bundesliga_resultate (match_id, matchday_date, matchday, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg) 
         SELECT %s, %s, %s, %s, %s, %s, %s, %s 
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE match_id=%s);
     """

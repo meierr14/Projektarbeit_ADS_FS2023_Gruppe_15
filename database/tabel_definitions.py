@@ -1,8 +1,8 @@
 create_table_resultate = """
     CREATE TABLE IF NOT EXISTS bundesliga_resultate(
         Match_ID INTEGER PRIMARY KEY,
-        Spieltag_Datum DATE,
-        Spieltag INTEGER,
+        matchday_date DATE,
+        matchday INTEGER,
         ID_TeamH INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         ID_TeamG INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         Anzahl_Tore INTEGER,

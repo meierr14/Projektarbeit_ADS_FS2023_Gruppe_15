@@ -1,6 +1,10 @@
 import psycopg2
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.multioutput import MultiOutputRegressor
+from sklearn.metrics import mean_squared_error
+
 
 # Verbindung zur Datenbank herstellen
 conn = psycopg2.connect(
@@ -28,11 +32,11 @@ df_pass = pd.read_sql(query_pass_stats, conn)
 merged_df = pd.merge(df_resultate, df_tabelle, left_on='id_teamh', right_on='team_id')
 merged_df = pd.merge(merged_df, df_tabelle, left_on='id_teamg', right_on='team_id', suffixes=('_home', '_guest'))
 merged_df = pd.merge(merged_df, df_shots, left_on=['id_teamh', 'matchday'], right_on=['team_id', 'matchday'])
-merged_df = pd.merge(merged_df, df_shots, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'], suffixes=('_home', '_guest'))
+merged_df = pd.merge(merged_df, df_shots, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'])
 merged_df = pd.merge(merged_df, df_duels, left_on=['id_teamh', 'matchday'], right_on=['team_id', 'matchday'])
-merged_df = pd.merge(merged_df, df_duels, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'], suffixes=('_home', '_guest'))
+merged_df = pd.merge(merged_df, df_duels, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'])
 merged_df = pd.merge(merged_df, df_pass, left_on=['id_teamh', 'matchday'], right_on=['team_id', 'matchday'])
-merged_df = pd.merge(merged_df, df_pass, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'], suffixes=('_home', '_guest'))
+merged_df = pd.merge(merged_df, df_pass, left_on=['id_teamg', 'matchday'], right_on=['team_id', 'matchday'])
 
 
 merged_df_dummies = pd.get_dummies(merged_df, columns=['mannschaft_home', 'mannschaft_guest'])
@@ -45,5 +49,14 @@ y = merged_df_dummies[['tore_teamh', 'tore_teamg']]
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 
-print(merged_df_dummies.head())
+# Decision tree classifier Objekt erstellen
+multioutput = MultiOutputRegressor(DecisionTreeRegressor(random_state=42))
+multioutput.fit(X_train, y_train)
+y_pred = multioutput.predict(X_test)
+
+
+mse = mean_squared_error(y_test, y_pred)
+print("MSE: {:.2f}".format(mse))
+
+
 

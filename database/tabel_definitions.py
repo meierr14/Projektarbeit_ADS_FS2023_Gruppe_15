@@ -5,20 +5,10 @@ create_table_resultate = """
         matchday INTEGER,
         ID_TeamH INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
         ID_TeamG INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
-        Anzahl_Tore INTEGER,
-        Anzahl_Schuesse INTEGER,
-        Ballbesitz_TeamH REAL,
-        Ballbesitz_TeamG REAL,
-        Anzahl_SchuesseH INTEGER,
-        Anzahl_SchuesseG INTEGER,    
+        Anzahl_Tore INTEGER,   
         Tore_TeamH INTEGER,
         Tore_TeamG INTEGER,
-        Fouls_TeamH INTEGER,
-        Fouls_TeamG INTEGER,
-        Ecken_TeamH INTEGER,
-        Ecken_TeamG INTEGER,
-        Offsides_TeamH INTEGER,
-        Offsides_TeamG INTEGER
+        Winner_team_id INTEGER
     );
 """
 

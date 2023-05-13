@@ -4,8 +4,8 @@ import json
 
 def table_insert_mannschaften(data_mannschaften):
     insert_query = """
-        INSERT INTO bundesliga_mannschaften (team_id, mannschaft) 
-        SELECT %s, %s 
+        INSERT INTO bundesliga_mannschaften (team_id, mannschaft)
+        SELECT %s, %s
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_mannschaften WHERE team_id=%s);
     """
     # Abafüllen der Tabelle Mannschaften
@@ -22,8 +22,9 @@ def table_update_mannschaften(data_tabelle):
         id = row['teamInfoId']
         points = row['points']
         goals = row['goals']
-        cur.execute(f'UPDATE bundesliga_mannschaften SET punkte = {points}, tore = {goals} WHERE team_id = {id}')
-        
+        cur.execute(
+            f'UPDATE bundesliga_mannschaften SET punkte = {points}, tore = {goals} WHERE team_id = {id}')
+
     conn.commit()
 
 
@@ -31,8 +32,8 @@ def table_insert_result(data_spiele):
     game_nr = 1
     counter = 0
     insert_query = """
-        INSERT INTO bundesliga_resultate (match_id, matchday_date, matchday, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg, winner_team_id) 
-        SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s 
+        INSERT INTO bundesliga_resultate (match_id, matchday_date, matchday, id_teamh, id_teamg, anzahl_tore, tore_teamh, tore_teamg, winner_team_id)
+        SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE match_id=%s);
     """
     for row in data_spiele:
@@ -51,7 +52,8 @@ def table_insert_result(data_spiele):
         else:
             winner_id = 0
 
-        cur.execute(insert_query, (match_id, datum, game_nr, team_heim, team_gast, goals_total, goals_heim, goals_gast, winner_id, match_id))  
+        cur.execute(insert_query, (match_id, datum, game_nr, team_heim,
+                    team_gast, goals_total, goals_heim, goals_gast, winner_id, match_id))
         if counter == 9:
             counter = 0
             game_nr += 1
@@ -70,15 +72,14 @@ conn = psycopg2.connect(
 # Cursor erstellen
 cur = conn.cursor()
 
-with open('APIs/JSONData/mannschaften.json', 'r') as file:
+with open(f'APIs/JSONData/mannschaften.json', 'r') as file:
     data_mannschaften = json.load(file)
 
-with open('APIs/JSONData/tabelle.json', 'r') as file:
+with open(f'APIs/JSONData/tabelle.json', 'r') as file:
     data_tabelle = json.load(file)
 
-with open('APIs/JSONData/ganze_saison.json', 'r') as file:
+with open(f'APIs/JSONData/ganze_saison.json', 'r') as file:
     data_spiele = json.load(file)
-
 
 
 table_insert_mannschaften(data_mannschaften)
@@ -86,6 +87,6 @@ table_update_mannschaften(data_tabelle)
 table_insert_result(data_spiele)
 
 
-#Verbindung schließen
+# Verbindung schließen
 cur.close()
 conn.close()

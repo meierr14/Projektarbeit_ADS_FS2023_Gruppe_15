@@ -18,6 +18,10 @@ cur.execute(tabel_definitions.create_table_resultate)
 cur.execute(tabel_definitions.create_table_pass_stats)
 cur.execute(tabel_definitions.create_table_tore_schuesse)
 cur.execute(tabel_definitions.create_table_zweikaempfe)
+cur.execute(tabel_definitions.create_table_ballkontrolle)
+cur.execute(tabel_definitions.create_table_laufleistung)
+cur.execute(tabel_definitions.create_table_freekicks)
+cur.execute(tabel_definitions.create_table_corners)
 
 # Änderungen in der DB speichern
 conn.commit()

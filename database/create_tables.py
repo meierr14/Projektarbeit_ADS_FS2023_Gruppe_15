@@ -1,3 +1,4 @@
+# Benötigte imports
 import psycopg2
 import tabel_definitions
 
@@ -12,7 +13,7 @@ conn = psycopg2.connect(
 # Cursor erstellen
 cur = conn.cursor()
 
-
+# Druchführen der einzelnen SQL Abfragen, die in tabel_defintions.py vorbereitet wurden
 cur.execute(tabel_definitions.create_table_mannschaften)
 cur.execute(tabel_definitions.create_table_resultate)
 cur.execute(tabel_definitions.create_table_pass_stats)

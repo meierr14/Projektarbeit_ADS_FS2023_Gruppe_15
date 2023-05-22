@@ -17,8 +17,7 @@ response.raise_for_status
 data = response.json()
 new_data = []
 
-# öffnet oder erstellt ein JSON File und speichert das Ergebniss des API calls
-    
+# öffnet oder erstellt ein JSON File und speichert das Ergebniss des API calls  
 with open(f"./APIs/JSONData/ganze_saison.json", "w") as file: 
     for row in data:
         if row['matchIsFinished']:
@@ -33,11 +32,12 @@ df = pandas.read_json(f'./APIs/JSONData/ganze_saison.json')
 df = df.drop(columns=["leagueId", "timeZoneID", "leagueShortcut", "lastUpdateDateTime", "location", "numberOfViewers"], axis=1)
 df = df.loc[df['matchIsFinished'] == True]
 
-
+# Vorbereitung von benötigten Listen
 days = []
 home_team = []
 guest_team = []
 
+# Iteration durch alle Datenreihen + hinzufügen in den Listen
 for index, row in df.iterrows():
     days.append(row['matchDateTime'])
     home_team.append(row['team1']['teamName'])
@@ -55,7 +55,7 @@ response2.raise_for_status
 
 data2 = response2.json()
 
-
+# öffnet oder erstellt ein JSON File und speichert das Ergebniss des API calls  
 with open(f"./APIs/JSONData/mannschaften.json", "w") as file:
     json.dump(data2, file, indent=4)
 
@@ -65,7 +65,7 @@ response3.raise_for_status
 
 data2 = response3.json()
 
-
+# öffnet oder erstellt ein JSON File und speichert das Ergebniss des API calls  
 with open(f"./APIs/JSONData/tabelle.json", "w") as file:
     json.dump(data2, file, indent=4)
 

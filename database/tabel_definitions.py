@@ -1,3 +1,5 @@
+# Sammlung von SQL Abfragen, um die Strktur der Datenbank mittels verschiedener Tabellen zu erstellen
+
 create_table_resultate = """
     CREATE TABLE IF NOT EXISTS bundesliga_resultate(
         Match_ID INTEGER PRIMARY KEY,

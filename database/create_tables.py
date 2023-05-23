@@ -23,6 +23,7 @@ cur.execute(table_definitions.create_table_ballkontrolle)
 cur.execute(table_definitions.create_table_laufleistung)
 cur.execute(table_definitions.create_table_freekicks)
 cur.execute(table_definitions.create_table_corners)
+cur.execute(table_definitions.create_table_last_season)
 
 # Änderungen in der DB speichern
 conn.commit()

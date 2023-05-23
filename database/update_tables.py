@@ -1,20 +1,20 @@
-# Dieses Python File soll es durchgeführt nachdem folgenden Schritte abgeschlossen wurden
+# Dieses Python File soll ausgeführt werden, nachdem folgendene Schritte abgeschlossen wurden:
 #       1.  Erstellen der Tabellen-Struktur in der DB --> create_tables.py
-#       2.  Durchführen des API-Calls und abspecherung der Daten in JSON-Files --> fotball_api   
+#       2.  Durchführen des API-Calls und Abspeicherung der Daten in JSON-Files --> football_api   
 
 # Benötigte Imports
 import psycopg2
 import json
 
 
-# Funktion um die Daten über die Mannschaften mittels SQL Abfrage in der DB zu speicher
+# Funktion, um die Daten über die Mannschaften mittels SQL Abfrage in die DB zu speichern
 def table_insert_mannschaften(data_mannschaften):
     insert_query = """
         INSERT INTO bundesliga_mannschaften (team_id, mannschaft)
         SELECT %s, %s
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_mannschaften WHERE team_id=%s);
     """
-    # Abafüllen der Tabelle Mannschaften
+    # Abfüllen der Tabelle Mannschaften
     for row in data_mannschaften:
         name = row['teamName']
         id = row['teamId']
@@ -22,7 +22,7 @@ def table_insert_mannschaften(data_mannschaften):
 
     conn.commit()
 
-# Funktion um die Daten über die Punkte und Tore mittels SQL Abfrage in der DB zu speicher
+# Funktion, um die Daten über die Punkte und Tore mittels SQL Abfrage in die DB zu speichern
 def table_update_mannschaften(data_tabelle):
     for row in data_tabelle:
         id = row['teamInfoId']
@@ -33,9 +33,9 @@ def table_update_mannschaften(data_tabelle):
 
     conn.commit()
 
-# Funktion um die Daten über die einzelnen Spieltage und Tore der Mannschafen mittels SQL Abfrage in der DB zu speicher
+# Funktion, um die Daten über die einzelnen Spieltage und Tore der Mannschafen mittels SQL Abfrage in die DB zu speichern
 def table_insert_result(data_spiele):
-    #Vor definierte Variablen die benötigt werden
+    #Vordefinierte Variablen die benötigt werden
     game_nr = 1
     counter = 0
     insert_query = """
@@ -43,8 +43,8 @@ def table_insert_result(data_spiele):
         SELECT %s, %s, %s, %s, %s, %s, %s, %s, %s
         WHERE NOT EXISTS (SELECT 1 FROM bundesliga_resultate WHERE match_id=%s);
     """
-    # For schleife die über alle Daten innerhalb des JSON-Files iteriert
-    # Da ein JSON-File wie ein Dictionary aufgebaut ist, kann man mittels der genauen bezeichnung den exakt benötigten Wert auslesen (bsp. matchID)
+    # For-Schleife, die über alle Daten innerhalb des JSON-Files iteriert
+    # Da ein JSON-File wie ein Dictionary aufgebaut ist, kann man mittels der genauen Bezeichnung der exakt benötigte Wert ausgelesen werden (bsp. matchID)
     for row in data_spiele:
         counter += 1
         match_id = row['matchID']
@@ -68,7 +68,7 @@ def table_insert_result(data_spiele):
         cur.execute(insert_query, (match_id, datum, game_nr, team_heim,
                     team_gast, goals_total, goals_heim, goals_gast, winner_id, match_id))
         # Jede Spieltag runde besteht aus 9 Spielen, da dies über die API nicht abgefragt werden kann 
-        # wird dies hier separat gemacht, damit definiert ist von welcher Spieltagrunde die Daten sind.
+        # wird hier separat gemacht, damit definiert ist, von welcher Spieltagrunde die Daten sind
         if counter == 9:
             counter = 0
             game_nr += 1
@@ -78,7 +78,7 @@ def table_insert_result(data_spiele):
 
 
 
-# Verbindung zur Datenbank herstellen
+# Verbindung zur Datenbank aufbauen
 conn = psycopg2.connect(
     host="localhost",
     database="PSQL_ADSFS2023Gruppe15",
@@ -89,7 +89,7 @@ conn = psycopg2.connect(
 # Cursor erstellen
 cur = conn.cursor()
 
-# Öffnen der einzelnen files und überführung in eine Variable\Dictionary
+# Öffnen der einzelnen Files und Überführung in eine Variable\Dictionary
 with open(f'APIs/JSONData/mannschaften.json', 'r') as file:
     data_mannschaften = json.load(file)
 
@@ -100,7 +100,7 @@ with open(f'APIs/JSONData/ganze_saison.json', 'r') as file:
     data_spiele = json.load(file)
 
 
-# Aufrugen der Funktionen und übergabe der Dictionaries/JSON-Daten als Input
+# Aufrufen der Funktionen und Übergabe der Dictionaries/JSON-Daten als Input
 table_insert_mannschaften(data_mannschaften)
 table_update_mannschaften(data_tabelle)
 table_insert_result(data_spiele)

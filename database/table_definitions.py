@@ -69,7 +69,7 @@ create_table_laufleistung = '''
         id SERIAL PRIMARY KEY,
         matchday INTEGER NOT NULL,
         team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
-       distance_total NUMERIC NOT NULL
+        distance_total NUMERIC NOT NULL
     );
 '''
 
@@ -90,5 +90,16 @@ create_table_corners = '''
         corner_left INTEGER NOT NULL,
         corner_right INTEGER NOT NULL,
         corner_total INTEGER NOT NULL
+    );
+'''
+
+create_table_last_season = '''
+    CREATE TABLE IF NOT EXISTS last_season (
+        id SERIAL PRIMARY KEY,
+        team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
+        goals INTEGER NOT NULL,
+        shots_total INTEGER NOT NULL,
+        touches_total INTEGER NOT NULL,
+        pass_percentage INTEGER NOT NULL
     );
 '''

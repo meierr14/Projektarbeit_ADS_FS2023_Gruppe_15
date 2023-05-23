@@ -3,3 +3,6 @@ requests
 lxml
 psycopg2
 pandas
+matplotlib
+sklearn
+tensorflow

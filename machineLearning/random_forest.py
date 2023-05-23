@@ -1,8 +1,12 @@
 import psycopg2
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split, GridSearchCV, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense
+
 
 # Verbindung zur Datenbank herstellen
 conn = psycopg2.connect(
@@ -99,3 +103,188 @@ y_pred = model.predict(X_test)
 # Evaluate model performance
 accuracy = accuracy_score(y_test, y_pred)
 print(f'Accuracy: {accuracy:.2f}')
+
+
+
+
+
+
+
+
+##### ANPASSUNGEN JOSP ######
+
+# Hyperparameter-Tuning
+# Leistung des Modells durch Hyperparameter-Tuning verbessern. 
+# Eine gängige Methode dafür ist GridSearchCV in Scikit-Learn, die wir hier verwenden:
+
+
+###### VERSION 1 ######
+param_grid = {
+    'n_estimators': [100, 200, 300, 400],
+    'max_depth': [None, 10, 20, 30],
+    'min_samples_split': [2, 5, 10],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, n_jobs=-1)
+grid_search.fit(X_train, y_train)
+print("Best parameters found: ", grid_search.best_params_)
+
+###### VERSION 2 ######
+# Das Modell, das wir optimieren wollen
+model = RandomForestClassifier(random_state=42)
+
+# Die Hyperparameter, die wir ausprobieren möchten
+param_grid = {
+    'n_estimators': [100, 200, 300, 500],   # Anzahl der Bäume
+    'max_depth': [None, 10, 20, 30],         # Maximale Tiefe der Bäume
+    'min_samples_split': [2, 5, 10],         # Minimale Anzahl von Samples, um einen internen Knoten zu teilen
+    'min_samples_leaf': [1, 2, 4]            # Minimale Anzahl von Samples, die an einem Blattknoten benötigt werden
+}
+
+# Anwendung von GridSearchCV
+grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, n_jobs=-1)
+grid_search.fit(X_train, y_train.values.ravel())
+
+# Ausgabe der besten Parameter
+print("Best parameters found: ", grid_search.best_params_)
+
+# Trainieren des Modells mit den besten Parametern
+best_model = grid_search.best_estimator_
+
+# Modell Evaluation
+y_pred_best = best_model.predict(X_test)
+accuracy_best = accuracy_score(y_test, y_pred_best)
+print(f'Accuracy of best model: {accuracy_best:.2f}')
+
+
+
+
+
+
+
+
+
+
+# Feature Importance
+
+###### VERSION 1 ######
+# Feature Importance analysieren, um zu verstehen, welche Merkmale am meisten zur Vorhersage beitragen:
+importance = model.feature_importances_
+for i, j in enumerate(importance):
+    print(X.columns[i], "=", j)
+
+
+###### VERSION 2 ######
+# Erhalte die Wichtigkeit der Merkmale
+importances = best_model.feature_importances_
+
+# Sortiere die Merkmale nach ihrer Wichtigkeit
+indices = np.argsort(importances)
+
+# Zeichne ein horizontales Balkendiagramm der Feature Importance
+plt.figure(figsize=(10, 12))
+plt.title('Feature Importances')
+plt.barh(range(len(indices)), importances[indices], color='b', align='center')
+plt.yticks(range(len(indices)), [X.columns[i] for i in indices])
+plt.xlabel('Relative Importance')
+plt.show()
+
+
+
+# Model Evaluation
+
+# Nachdem die Vorhersagen gemacht wurden:
+y_pred = model.predict(X_test)
+
+# Verwenden der Funktion classification_report, um einen Textbericht über die wichtigsten Klassifikationsmetriken zu erstellen
+print(classification_report(y_test, y_pred))
+
+# Verwenden der Funktion confusion_matrix, um eine Konfusionsmatrix zu erstellen
+cm = confusion_matrix(y_test, y_pred)
+
+# Anzeigen der Konfusionsmatrix mit Hilfe von Matplotlib
+plt.figure(figsize=(10,7))
+sns.heatmap(cm, annot=True)
+plt.xlabel('Predicted')
+plt.ylabel('Truth')
+plt.show()
+
+
+
+
+# Cross Validation
+# Kreuzvalidierung in Scikit-Learn
+# Definieren des Modells
+model = RandomForestClassifier(n_estimators=100, random_state=42)
+
+# Ausführen einer 5-fache Kreuzvalidierung
+scores = cross_val_score(model, X, y, cv=5)
+
+# Durchschnittliche Genauigkeit über alle 5 Folds ausgeben
+print("Average cross-validation score: {:.2f}".format(scores.mean()))
+
+
+
+
+
+
+# neuronales Netzwerk mit TensorFlow
+# Definieren des Modells
+model = Sequential()
+
+# Fügen Sie die Schichten hinzu
+model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(1, activation='sigmoid')) # Verwenden Sie 'softmax' für mehr als zwei Klassen
+
+# Kompilieren Sie das Modell
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) # Verwenden Sie 'categorical_crossentropy' für mehr als zwei Klassen
+
+# Trainieren Sie das Modell
+model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_test, y_test))
+
+
+
+
+
+
+
+
+
+
+# Modell Implementierung und Vorhersagen
+# Vorhersagen auf den Testdaten durchführen
+y_pred = model.predict(X_test)
+
+# Die Genauigkeit des Modells auf den Testdaten ausgeben
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy:.2f}')
+
+
+# Modellbewertung 
+print(classification_report(y_test, y_pred))
+
+conf_matrix = confusion_matrix(y_test, y_pred)
+print(f'Confusion Matrix: \n{conf_matrix}')
+
+
+
+### spekulativ ob nötig: ####
+
+
+# auf neuen, unbekannten Daten anwenden, um Vorhersagen zu treffen
+# Angenommen, new_data ist ein DataFrame, der Ihre neuen Daten enthält
+y_new_pred = model.predict(new_data)
+
+# Nehmen wir an, new_data ist Ihr DataFrame mit den Spielen eines bestimmten Spieltags
+new_data = pd.read_sql(query_new_data, conn)
+
+# Stellen Sie sicher, dass new_data die gleiche Struktur hat wie die Trainingsdaten (X_train)
+new_data_prepared = preprocess_new_data(new_data)  # Hier müssen Sie die geeignete Vorverarbeitung durchführen
+
+# Führen Sie die Vorhersage aus
+y_new_pred = model.predict(new_data_prepared)
+
+# Jetzt enthält y_new_pred die vorhergesagten Gewinner für die Spiele in new_data
+print(y_new_pred)

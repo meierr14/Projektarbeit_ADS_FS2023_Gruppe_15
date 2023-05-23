@@ -233,15 +233,15 @@ print("Average cross-validation score: {:.2f}".format(scores.mean()))
 # Definieren des Modells
 model = Sequential()
 
-# Fügen Sie die Schichten hinzu
+# Hinzufügen von Schichten
 model.add(Dense(64, activation='relu', input_shape=(X_train.shape[1],)))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(1, activation='sigmoid')) # Verwenden Sie 'softmax' für mehr als zwei Klassen
 
-# Kompilieren Sie das Modell
+# Kompilieren des Modells
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']) # Verwenden Sie 'categorical_crossentropy' für mehr als zwei Klassen
 
-# Trainieren Sie das Modell
+# Trainieren des Modells
 model.fit(X_train, y_train, epochs=10, batch_size=32, validation_data=(X_test, y_test))
 
 

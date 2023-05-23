@@ -1,6 +1,6 @@
 # Benötigte imports
 import psycopg2
-import tabel_definitions
+import table_definitions
 
 # Verbindung zur Datenbank herstellen
 conn = psycopg2.connect(
@@ -14,15 +14,15 @@ conn = psycopg2.connect(
 cur = conn.cursor()
 
 # Druchführen der einzelnen SQL Abfragen, die in tabel_defintions.py vorbereitet wurden
-cur.execute(tabel_definitions.create_table_mannschaften)
-cur.execute(tabel_definitions.create_table_resultate)
-cur.execute(tabel_definitions.create_table_pass_stats)
-cur.execute(tabel_definitions.create_table_tore_schuesse)
-cur.execute(tabel_definitions.create_table_zweikaempfe)
-cur.execute(tabel_definitions.create_table_ballkontrolle)
-cur.execute(tabel_definitions.create_table_laufleistung)
-cur.execute(tabel_definitions.create_table_freekicks)
-cur.execute(tabel_definitions.create_table_corners)
+cur.execute(table_definitions.create_table_mannschaften)
+cur.execute(table_definitions.create_table_resultate)
+cur.execute(table_definitions.create_table_pass_stats)
+cur.execute(table_definitions.create_table_tore_schuesse)
+cur.execute(table_definitions.create_table_zweikaempfe)
+cur.execute(table_definitions.create_table_ballkontrolle)
+cur.execute(table_definitions.create_table_laufleistung)
+cur.execute(table_definitions.create_table_freekicks)
+cur.execute(table_definitions.create_table_corners)
 
 # Änderungen in der DB speichern
 conn.commit()

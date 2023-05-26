@@ -6,3 +6,5 @@ pandas
 matplotlib
 sklearn
 tensorflow
+numpy
+seaborn

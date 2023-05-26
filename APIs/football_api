@@ -58,7 +58,6 @@ data2 = response2.json()
 # öffnet oder erstellt ein JSON File und speichert das Ergebniss des API calls  
 with open(f"./APIs/JSONData/mannschaften.json", "w") as file:
     json.dump(data2, file, indent=4)
-
 # Tabelle der der aktuellen Saison
 response3 = requests.get(url=request3)
 response3.raise_for_status

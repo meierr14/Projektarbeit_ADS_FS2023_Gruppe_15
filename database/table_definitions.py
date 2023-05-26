@@ -103,3 +103,12 @@ create_table_last_season = '''
         pass_percentage INTEGER NOT NULL
     );
 '''
+
+create_table_laufleistung_letzte_saison = '''
+    CREATE TABLE IF NOT EXISTS bundesliga_distance_stats_last_season (
+        id SERIAL PRIMARY KEY,
+        matchday INTEGER NOT NULL,
+        team_id INT REFERENCES bundesliga_mannschaften(Team_ID) ON DELETE CASCADE,
+        distance_total NUMERIC NOT NULL
+    );
+'''

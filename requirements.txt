@@ -8,3 +8,7 @@ sklearn
 tensorflow
 numpy
 seaborn
+matplotlib.offsetbox
+folium
+geopy
+statistics
